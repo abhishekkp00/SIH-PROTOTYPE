@@ -1,0 +1,16 @@
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
+
+const resources = {
+  en: { translation: { title: 'SeaLens', hotspots: 'Hotspots', market: 'Market', alerts: 'Alerts' } },
+  hi: { translation: { title: 'सीलेंस', hotspots: 'हॉटस्पॉट', market: 'बाज़ार', alerts: 'अलर्ट' } },
+}
+
+i18n.use(initReactI18next).init({
+  resources,
+  lng: 'en',
+  fallbackLng: 'en',
+  interpolation: { escapeValue: false },
+})
+
+export default i18n
