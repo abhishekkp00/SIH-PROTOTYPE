@@ -3,6 +3,7 @@ import './i18n'
 import { Suspense, lazy } from 'react'
 import { Header } from './components/Header'
 import { TabNavigation } from './components/TabNavigation'
+import { LocationProvider } from './contexts/LocationContext'
 
 const HotspotMap = lazy(() => import('./components/HotspotMap').then(m => ({ default: m.HotspotMap })))
 const MarketInsights = lazy(() => import('./components/MarketInsights').then(m => ({ default: m.MarketInsights })))
@@ -21,18 +22,21 @@ function App() {
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: '0 auto' }}>
-      <Header />
-      <Suspense fallback={<div style={{ padding: 16 }}>Loading...</div>}>
-        <TabNavigation
-          tabs={[
-            { key: 'map', label: 'Hotspots', content: <HotspotMap /> },
-            { key: 'market', label: 'Market', content: <MarketInsights /> },
-            { key: 'alerts', label: 'Alerts', content: <Alerts /> },
-          ]}
-        />
-      </Suspense>
-    </div>
+    <LocationProvider>
+      <div className="app-container">
+        <Header />
+        <Suspense fallback={<div className="loading-fallback">Loading...</div>}>
+          <TabNavigation
+            tabs={[
+              { key: 'hotspots', label: 'AI Hotspots', content: <HotspotMap />, icon: '🎯' },
+              { key: 'market', label: 'Market Intel', content: <MarketInsights />, icon: '📈' },
+              { key: 'alerts', label: 'Safety Alerts', content: <Alerts />, icon: '⚠️' },
+              { key: 'dashboard', label: 'Dashboard', content: <GovDashboard />, icon: '📊' },
+            ]}
+          />
+        </Suspense>
+      </div>
+    </LocationProvider>
   )
 }
 

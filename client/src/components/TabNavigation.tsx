@@ -1,17 +1,62 @@
 import { useState, type ReactNode } from 'react'
 
-export function TabNavigation({ tabs }: { tabs: { key: string; label: string; content: ReactNode }[] }) {
+interface Tab {
+  key: string
+  label: string
+  content: ReactNode
+  icon?: string
+}
+
+export function TabNavigation({ tabs }: { tabs: Tab[] }) {
   const [active, setActive] = useState(tabs[0]?.key)
+  
+  const getTabIcon = (key: string) => {
+    switch (key.toLowerCase()) {
+      case 'hotspots': return '🎯'
+      case 'market': return '📈'
+      case 'alerts': return '🔔'
+      case 'dashboard': return '📊'
+      case 'government': return '🏛️'
+      case 'insights': return '💡'
+      default: return '📍'
+    }
+  }
+  
   return (
-    <div>
-      <nav className="tabbar">
-        {tabs.map((t) => (
-          <button key={t.key} onClick={() => setActive(t.key)} className={`tab ${active === t.key ? 'active' : ''}`}>
-            {t.label}
+    <div className="flex flex-col min-h-screen">
+      <nav className="tabbar" role="tablist" aria-label="Navigation tabs">
+        {tabs.map((tab) => (
+          <button 
+            key={tab.key} 
+            onClick={() => setActive(tab.key)} 
+            className={`tab ${active === tab.key ? 'active' : ''}`}
+            role="tab"
+            aria-selected={active === tab.key}
+            aria-controls={`panel-${tab.key}`}
+            id={`tab-${tab.key}`}
+            title={tab.label}
+          >
+            <span className="text-lg" aria-hidden="true">
+              {tab.icon || getTabIcon(tab.key)}
+            </span>
+            <span className="font-semibold">{tab.label}</span>
           </button>
         ))}
       </nav>
-      <div className="content">{tabs.find((t) => t.key === active)?.content}</div>
+      
+      <main className="content flex-1">
+        {tabs.map((tab) => (
+          <div
+            key={tab.key}
+            id={`panel-${tab.key}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${tab.key}`}
+            className={active === tab.key ? '' : 'hidden'}
+          >
+            {tab.content}
+          </div>
+        ))}
+      </main>
     </div>
   )
 }
